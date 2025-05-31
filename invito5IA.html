@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Invito Cena di Fine Anno</title>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Roboto Slab', serif;
+      background: linear-gradient(to bottom, #e6f0ff, #ccd9ff);
+      color: #003366;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      padding: 1rem;
+    }
+
+    .container {
+      background: white;
+      padding: 1.5rem;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      width: 100%;
+      max-width: 500px;
+      transition: all 0.5s ease-in-out;
+    }
+
+    h1, h2 {
+      text-align: center;
+      color: #002244;
+      font-size: 1.5rem;
+    }
+
+    select, textarea, input[type="text"] {
+      width: 100%;
+      padding: 0.75rem;
+      margin: 0.75rem 0;
+      border: 1px solid #6699cc;
+      border-radius: 8px;
+      font-size: 1rem;
+      box-sizing: border-box;
+    }
+
+    button {
+      background-color: #336699;
+      color: white;
+      padding: 0.75rem;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+      margin-top: 1rem;
+      width: 100%;
+    }
+
+    button:hover {
+      background-color: #27496d;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    .fade-in {
+      animation: fadeIn 1s ease-in forwards;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Gentile prof, è stato/a invitato/a alla cena di fine anno con la classe!</h1> 
+    <h4>Tuttavia per scoprire i dettagli dell'evento deve rispondere correttamente a 3 domande!</h4>
+    <label for="subjectSelect">Per iniziare selezioni la sua materia:</label>
+    <select id="subjectSelect">
+      <option value="">-- Seleziona --</option>
+      <option value="educazioneFisica">Educazione Fisica</option>
+      <option value="gpoi">GPOI</option>
+      <option value="inglese">Inglese</option>
+      <option value="informatica">Informatica</option>
+      <option value="italiano">Italiano/Storia</option>
+      <option value="matematica">Matematica</option>
+      <option value="religione">Religione</option>
+      <option value="sistemi">Sistemi e Reti</option>
+      <option value="tpsi">TPSI</option>
+    </select>
+    <button id="confermaMateriaBtn">Conferma Materia</button>
+
+    <!-- Sezione domande -->
+    <div id="questionsSection" class="hidden">
+      <h2>Rispondi a queste domande:</h2>
+      <h4>Una sola parola per domanda!</h4>
+
+      <!-- DOMANDA 1 -->
+      <label for="q1">Domanda 1:</label>
+      <textarea id="q1" placeholder="Scrivi la risposta..."></textarea>
+
+      <!-- DOMANDA 2 -->
+      <label for="q2">Domanda 2:</label>
+      <textarea id="q2" placeholder="Scrivi la risposta..."></textarea>
+
+      <!-- DOMANDA 3 -->
+      <label for="q3">Domanda 3:</label>
+      <textarea id="q3" placeholder="Scrivi la risposta..."></textarea>
+
+      <button onclick="checkAnswers()">Invia Risposte</button>
+    </div>
+
+    <!-- Sezione Dettagli Cena -->
+    <div id="invitoSection" class="hidden fade-in">
+      <h2>🎉 Complimenti! Ecco i dettagli della cena.🎉</h2>
+      <p><strong>Luogo: </strong>Bob&Clare - Via Campi Flegrei, 72, 80078 Pozzuoli NA</p>
+      <p><strong>Data: </strong>Mercoledì 11 giugno 2025</p>
+      <p><strong>Ore: </strong> 20:30</p>
+      <p id="quote"></p>
+    </div>
+  </div>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const subjectSelect = document.getElementById('subjectSelect');
+      const questionsSection = document.getElementById('questionsSection');
+      const invitoSection = document.getElementById('invitoSection');
+      const quoteText = document.getElementById('quote');
+      const confermaBtn = document.getElementById('confermaMateriaBtn');
+
+      const quizData = {
+        italiano: {
+          domande: [
+            'Quale stagione è usata come metafora nella celebre poesia di Ungaretti?',
+            'Cosa caratterizza il Decadentismo, al contrario del Positivismo?',
+            'Qual è il cognome dell\'autore di "Se questo è un uomo"?'
+          ],
+          risposte: ['autunno', 'pessimismo', 'levi'],
+          citazione: 'La aspettiamo a cena con entusiasmo: la sua presenza sarebbe come direbbe Pascoli, il focolare acceso, che scalda le parole e illumina i racconti tra storia, letteratura e buona compagnia.'
+        },
+        informatica: {
+          domande: [
+            'Quale parola chiave si usa per creare una nuova istanza di oggetto in Java?',
+            'Quale clausola si usa per ordinare i risultati in MySQL?',
+            'Come si chiama la funzione che restituisce il numero di righe in MySQL?'
+          ],
+          risposte: ['new', 'order', 'count'],
+          citazione: 'La sua partecipazione sarebbe la query che completa il nostro database dei ricordi.'
+        },
+        sistemi: {
+          domande: [
+            'Quale algoritmo asimmetrico si basa sulla fattorizzazione di numeri primi?',
+            'Quale protocollo viene usato per inviare email?',
+            'Quale codice di stato indica “Non trovato”?'
+          ],
+          risposte: ['rsa', 'smtp', '404'],
+          citazione: 'La sua partecipazione sarebbe come un handshake TCP: l’inizio affidabile di una serata che promette connessioni sincere e durature.'
+        },
+        inglese: {
+          domande: [
+            'What is the most popular type of malware?',
+            'What does the word "bot" stand for?',
+            'What are the new flying weapons in modern warfare?'
+          ],
+          risposte: ['virus', 'robot', 'drones'],
+          citazione: 'Your presence would be the key to unlocking new levels of connection, much like AI unlocking the potential of data in the vast cyber world.'
+        },
+        matematica: {
+          domande: [
+            'Come si chiama l’asintoto che la funzione tende a raggiungere per x che tende a ±∞?',
+            'Un asintoto verticale indica un punto di:',
+            'Quale termine indica l’insieme dei valori di input di una funzione?'
+          ],
+          risposte: ['orizzontale', 'discontinuità', 'dominio'],
+          citazione: 'Ci farebbe davvero piacere averla con noi: con la sua partecipazione, la serata sarà un integrale definito di sorrisi e conversazioni che restituiscono solo valori positivi.'
+        },
+        tpsi: {
+          domande: [
+            'Quale protocollo basato su XML è usato per Web Service?',
+            'Quale protocollo di trasporto è orientato alla connessione?',
+            'A cosa sta la M nella sigla XML?'
+          ],
+          risposte: ['soap', 'tcp', 'markup'],
+          citazione: 'Sarebbe un onore averla con noi: con lei a tavola, ogni scambio sarà come una comunicazione socket ben gestita — affidabile, continua e a bassa latenza.'
+        },
+        gpoi: {
+          domande: [
+            'Che tipo di costo è costante indipendentemente dalla produzione?',
+            'Quale costo rappresenta il costo aggiuntivo per produrre un’unità in più?',
+            'Quale termine indica l’insieme di risorse umane e materiali in un’impresa?'
+          ],
+          risposte: ['fisso', 'marginale', 'capitale'],
+          citazione: 'Saremmo lieti di averla con noi: la sua presenza rappresenterebbe il nostro punto di pareggio perfetto, dove il valore della compagnia supera ogni costo.'
+        },
+        educazioneFisica: {
+          domande: [
+            'Come si chiama il giocatore specializzato nella difesa nella pallavolo?',
+            'Quanti punti servono per vincere un set di ping pong? (scrivi a lettere)',
+            'Come si chiama il lancio iniziale della pallina?'
+          ],
+          risposte: ['libero', 'undici', 'servizio'],
+          citazione: 'Come in una buona partita, contano il ritmo, la presenza e il gioco di squadra: ecco perché ci farebbe davvero piacere condividere con lei questa serata.'
+        },
+        religione: {
+          domande: [
+            'Qual è il testo sacro principale dell’ebraismo?',
+            'Quale festa celebra la resurrezione di Gesù?',
+            'Come si chiama l\'evento eccezionale nella Chiesa cattolica che si celebra ogni 25 anni?'
+          ],
+          risposte: ['torah', 'pasqua', 'giubileo'],
+          citazione: 'Come lo Shabbat invita al riposo e alla riflessione, così vorremmo che questa cena fosse per tutti un momento di quiete, rispetto e presenza autentica.'
+        },
+      };
+
+      confermaBtn.addEventListener('click', () => {
+        const materia = subjectSelect.value;
+        if (quizData[materia]) {
+          questionsSection.classList.remove('hidden');
+          document.getElementById('q1').placeholder = quizData[materia].domande[0];
+          document.getElementById('q2').placeholder = quizData[materia].domande[1];
+          document.getElementById('q3').placeholder = quizData[materia].domande[2];
+          invitoSection.classList.add('hidden');
+        } else {
+          alert('Seleziona una materia valida.');
+          questionsSection.classList.add('hidden');
+        }
+      });
+
+      window.checkAnswers = function () {
+        const materia = subjectSelect.value;
+        const risposta1 = document.getElementById('q1').value.toLowerCase();
+        const risposta2 = document.getElementById('q2').value.toLowerCase();
+        const risposta3 = document.getElementById('q3').value.toLowerCase();
+
+        if (!quizData[materia]) return;
+
+        const risposteCorrette = quizData[materia].risposte;
+
+        if (
+          risposta1.includes(risposteCorrette[0]) &&
+          risposta2.includes(risposteCorrette[1]) &&
+          risposta3.includes(risposteCorrette[2])
+        ) {
+          invitoSection.classList.remove('hidden');
+          quoteText.textContent = quizData[materia].citazione;
+        } else {
+          alert('Una o più risposte non corrette. Riprova!');
+        }
+      };
+    });
+  </script>
+</body>
+</html>
